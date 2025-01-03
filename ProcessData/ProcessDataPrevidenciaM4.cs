@@ -52,7 +52,7 @@ namespace CVP.Routines.MotorArquivosComunicacao.ProcessData
                     if (!fileStream.CanRead)
                         throw new ArgumentException($"O arquivo '{file}' não pode ser lido.");
 
-                    IEnumerable<byte[]> pdfsData = await _previdenciaM4Service.ConverterEGerarPrevidenciaM4PdfAsync(fileStream, tipo);
+                    IEnumerable<byte[]> pdfsData = await _previdenciaM4Service.ConverterEGerarPrevidenciaPdfAsync(fileStream, tipo);
                     int pdfIndex = 1;
 
                     foreach (var pdf in pdfsData)

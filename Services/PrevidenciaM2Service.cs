@@ -17,7 +17,7 @@ namespace CVP.Routines.MotorArquivosComunicacao.Console.Services
         {
             _importFileConverterService = dataConverterService;
         }
-        public async Task<IEnumerable<byte[]>> ConverterEGerarPrevidenciaM2PdfAsync(Stream fileStream,  PrevidenciaM2Type tipo)
+        public async Task<IEnumerable<byte[]>> ConverterEGerarPrevidenciaPdfAsync(Stream fileStream,  PrevidenciaM2Type tipo)
         {
             if (fileStream == null || fileStream.Length == 0)
                 throw new ArgumentException("O arquivo enviado está vazio ou é inválido.");
@@ -39,8 +39,18 @@ namespace CVP.Routines.MotorArquivosComunicacao.Console.Services
             {
                 throw new ArgumentException("O arquivo não contém dados necessários para geração do pdf.");
             }
-            
-            return records.Select(record => GerarDocumentoPrevidenciaM2(record, tipo));
+
+            #if DEBUG
+                // Em modo Debug, processa apenas o primeiro registro para facilitar o teste
+                var firstRecord = records.FirstOrDefault();
+                if (firstRecord == null)
+                    throw new InvalidOperationException("Nenhum registro encontrado para processar em modo Debug.");
+
+                return new List<byte[]> { GerarDocumentoPrevidenciaM2(firstRecord, tipo) };
+            #else
+                // Em modo Release, processa todos os registros
+                return records.Select(record => GerarDocumentoPrevidenciaM1(record, tipo));
+            #endif
         }
 
         private byte[] GerarDocumentoPrevidenciaM2(Dictionary<string, string> dados, PrevidenciaM2Type tipo)

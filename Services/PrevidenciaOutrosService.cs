@@ -2,6 +2,7 @@
 using CVP.Routines.MotorArquivosComunicacao.Enums;
 using IntegraCVP.Application.Helper;
 using CVP.Routines.MotorArquivosComunicacao.Console.Interfaces;
+using CVP.Routines.MotorArquivosComunicacao.ConsoleApp.Const;
 
 
 namespace CVP.Routines.MotorArquivosComunicacao.Console.Services
@@ -16,7 +17,7 @@ namespace CVP.Routines.MotorArquivosComunicacao.Console.Services
         {
             _importFileConverterService = dataConverterService;
         }
-        public async Task<byte[]> ConverterEGerarPrevidenciaOutrosPdfAsync(Stream fileStream,  PrevidenciaOutrosType tipo)
+        public async Task<IEnumerable<byte[]>> ConverterEGerarPrevidenciaPdfAsync(Stream fileStream,  PrevidenciaOutrosType tipo)
         {
             if (fileStream == null || fileStream.Length == 0)
                 throw new ArgumentException("O arquivo enviado está vazio ou é inválido.");
@@ -25,19 +26,38 @@ namespace CVP.Routines.MotorArquivosComunicacao.Console.Services
             await fileStream.CopyToAsync(memoryStream);
             memoryStream.Position = 0;
 
-            var PrevidenciaOutrosData = await _importFileConverterService.ProcessDataAsync(memoryStream);
+            var records = await _importFileConverterService.ProcessDataAsync(memoryStream);
 
-            if (PrevidenciaOutrosData == null || !PrevidenciaOutrosData.Any())
+            if (records == null || !records.Any())
                 throw new ArgumentException("O arquivo não contém dados válidos.");
 
+            if (records == null || !records.Any())
+                throw new ArgumentException("O arquivo não contém dados válidos.");
 
-            var primeiroParticipante = PrevidenciaOutrosData
-                 .FirstOrDefault(e => e.ContainsKey("RecordType") && e["RecordType"] == "13");
+            var permissao = records.Any(r => r.ContainsKey("BOLETO_TP_REGISTRO") && r["BOLETO_TP_REGISTRO"] == TipoLayout.BOLETO);
 
-            return GerarDocumentoPrevidenciaOutros(primeiroParticipante, tipo);
+            if (records == null || !records.Any())
+                throw new ArgumentException($"O arquivo não contém dados válidos para a geração do pdf {tipo}.");
+
+            if (!permissao)
+            {
+                throw new ArgumentException($"O arquivo não contém dados necessários para geração do pdf {tipo}.");
+            }
+
+#if DEBUG
+            var firstRecord = records.FirstOrDefault();
+            if (firstRecord == null)
+                throw new InvalidOperationException("Nenhum registro encontrado para processar em modo Debug.");
+
+            return new List<byte[]> { GerarDocumentoPrevidenciaOutros(firstRecord, tipo) };
+#else
+                // Em modo Release, processa todos os registros
+                return records.Select(record => GerarDocumentoPrevidenciaM1(record, tipo));
+#endif 
+            return records.Select(record => GerarDocumentoPrevidenciaOutros(record, tipo));
         }
 
-        public byte[] GerarDocumentoPrevidenciaOutros(Dictionary<string, string> dados, PrevidenciaOutrosType tipo)
+        private byte[] GerarDocumentoPrevidenciaOutros(Dictionary<string, string> dados, PrevidenciaOutrosType tipo)
         {
             string imagePath = GetImagePath(tipo, PrevidenciaOutrosFolder);
 

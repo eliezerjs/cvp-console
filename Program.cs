@@ -1,12 +1,13 @@
-﻿using CVP.Routines.MotorArquivosComunicacao.Console;
-using CVP.Routines.MotorArquivosComunicacao.Console.Entities;
-using CVP.Routines.MotorArquivosComunicacao.Console.Http;
-using CVP.Routines.MotorArquivosComunicacao.Console.Persistences.Interfaces;
+﻿using CVP.Routines.MotorArquivosComunicacao.Enums;
 using CVP.Routines.MotorArquivosComunicacao.ProcessData;
 using CVP.Routines.MotorArquivosComunicacao.Console.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System.Timers;
+using CVP.Routines.MotorArquivosComunicacao.Console.Entities;
+using CVP.Routines.MotorArquivosComunicacao.Console.Persistences.Interfaces;
+using CVP.Routines.MotorArquivosComunicacao.Console;
 
+// Configuração de variáveis de ambiente
 Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "");
 
 // Configuração de dependências
@@ -20,57 +21,51 @@ string inputPath = Environment.GetEnvironmentVariable("INPUT_PATH") ?? throw new
 string outputPath = Environment.GetEnvironmentVariable("OUTPUT_PATH") ?? throw new InvalidOperationException("OUTPUT_PATH is not set.");
 string processedFilesPath = Environment.GetEnvironmentVariable("PROCESSED_FILES_PATH") ?? throw new InvalidOperationException("PROCESSED_FILES_PATH is not set.");
 
-System.Timers.Timer timer = new System.Timers.Timer(interval);
+System.Timers.Timer timer = new(interval);
 
-
-
-
-timer.Elapsed += async (sender, e) =>
-{
+//timer.Elapsed += async (sender, e) =>
+//{
     try
     {
-        /*
-        var processDataM1 = new ProcessDataPrevidenciaM1(sp.GetService<IPrevidenciaM1Service>());
+        // Lista de serviços e tipos
+        var servicesAndTypes = new List<(object Service, Type EnumType)>
+        {
+            (sp.GetService<IPrevidenciaM1Service>(), typeof(PrevidenciaM1Type)),
+            (sp.GetService<IPrevidenciaM2Service>(), typeof(PrevidenciaM2Type)),
+            (sp.GetService<IPrevidenciaM3Service>(), typeof(PrevidenciaM3Type)),
+            (sp.GetService<IPrevidenciaM4Service>(), typeof(PrevidenciaM4Type)),
+            (sp.GetService<IPrevidenciaM5Service>(), typeof(PrevidenciaM5Type)),
+            (sp.GetService<IPrevidenciaM6Service>(), typeof(PrevidenciaM6Type)),
+            (sp.GetService<IPrevidenciaOutrosService>(), typeof(PrevidenciaOutrosType))
+        };
 
-        await processDataM1.ProcessFilesAsync(inputPath, outputPath, processedFilesPath, CVP.Routines.MotorArquivosComunicacao.Enums.PrevidenciaM1Type.PK28);
-        await processDataM1.ProcessFilesAsync(inputPath, outputPath, processedFilesPath, CVP.Routines.MotorArquivosComunicacao.Enums.PrevidenciaM1Type.PK29);
-        await processDataM1.ProcessFilesAsync(inputPath, outputPath, processedFilesPath, CVP.Routines.MotorArquivosComunicacao.Enums.PrevidenciaM1Type.PK30);
-        await processDataM1.ProcessFilesAsync(inputPath, outputPath, processedFilesPath, CVP.Routines.MotorArquivosComunicacao.Enums.PrevidenciaM1Type.PK31);
-        await processDataM1.ProcessFilesAsync(inputPath, outputPath, processedFilesPath, CVP.Routines.MotorArquivosComunicacao.Enums.PrevidenciaM1Type.PK32);
-        await processDataM1.ProcessFilesAsync(inputPath, outputPath, processedFilesPath, CVP.Routines.MotorArquivosComunicacao.Enums.PrevidenciaM1Type.PK33);
-        await processDataM1.ProcessFilesAsync(inputPath, outputPath, processedFilesPath, CVP.Routines.MotorArquivosComunicacao.Enums.PrevidenciaM1Type.PK34);
-        await processDataM1.ProcessFilesAsync(inputPath, outputPath, processedFilesPath, CVP.Routines.MotorArquivosComunicacao.Enums.PrevidenciaM1Type.PK36);
-        await processDataM1.ProcessFilesAsync(inputPath, outputPath, processedFilesPath, CVP.Routines.MotorArquivosComunicacao.Enums.PrevidenciaM1Type.PK47);
+        foreach (var (service, enumType) in servicesAndTypes)
+        {
+            foreach (var enumValue in Enum.GetValues(enumType))
+            {
+                var processData = new ProcessDataService<object, Enum>(service);
 
-        var processDataM2 = new ProcessDataPrevidenciaM2(sp.GetService<IPrevidenciaM2Service>());
+                // Conversão dinâmica do método de conversão
+                Func<object, Stream, Enum, Task<IEnumerable<byte[]>>> converterMethod = (svc, stream, tipo) =>
+                    (Task<IEnumerable<byte[]>>)svc.GetType()
+                        .GetMethod("ConverterEGerarPrevidenciaPdfAsync")?
+                        .Invoke(svc, new object[] { stream, tipo });
 
-        await processDataM2.ProcessFilesAsync(inputPath, outputPath, processedFilesPath, CVP.Routines.MotorArquivosComunicacao.Enums.PrevidenciaM2Type.PK08);
-        await processDataM2.ProcessFilesAsync(inputPath, outputPath, processedFilesPath, CVP.Routines.MotorArquivosComunicacao.Enums.PrevidenciaM2Type.PK09);
-        await processDataM2.ProcessFilesAsync(inputPath, outputPath, processedFilesPath, CVP.Routines.MotorArquivosComunicacao.Enums.PrevidenciaM2Type.PK10);
-        */
-        var processDataM3 = new ProcessDataPrevidenciaM3(sp.GetService<IPrevidenciaM3Service>());
+                await processData.ProcessFilesAsync(inputPath, outputPath, processedFilesPath, (Enum)enumValue, converterMethod);
+            }
+        }
 
-        await processDataM3.ProcessFilesAsync(inputPath, outputPath, processedFilesPath, CVP.Routines.MotorArquivosComunicacao.Enums.PrevidenciaM3Type.PK56);
-        await processDataM3.ProcessFilesAsync(inputPath, outputPath, processedFilesPath, CVP.Routines.MotorArquivosComunicacao.Enums.PrevidenciaM3Type.PK57);
-        await processDataM3.ProcessFilesAsync(inputPath, outputPath, processedFilesPath, CVP.Routines.MotorArquivosComunicacao.Enums.PrevidenciaM3Type.PK58);
-
-
-        var processDataM4 = new ProcessDataPrevidenciaM4(sp.GetService<IPrevidenciaM4Service>());
-
-        await processDataM4.ProcessFilesAsync(inputPath, outputPath, processedFilesPath, CVP.Routines.MotorArquivosComunicacao.Enums.PrevidenciaM4Type.PK05);
-        await processDataM4.ProcessFilesAsync(inputPath, outputPath, processedFilesPath, CVP.Routines.MotorArquivosComunicacao.Enums.PrevidenciaM4Type.PK06);
-        
-        Console.WriteLine("Arquivos processados com sucesso.");
+        Console.WriteLine("Todos os arquivos foram processados com sucesso.");
     }
     catch (Exception ex)
     {
         Console.WriteLine($"Erro ao processar arquivos: {ex.Message}");
     }
-};
+//};
 
 timer.Start();
 
-System.Console.WriteLine("Rotina iniciada. Pressione Enter para encerrar.");
+Console.WriteLine("Rotina iniciada. Pressione Enter para encerrar.");
 Console.ReadLine();
 
 timer.Stop();
@@ -79,8 +74,8 @@ timer.Dispose();
 async Task ExecutarRotina(Func<Task> blocoExecucao)
 {
     bool ocorreuErro = false;
-    ILogPersist logPersist = sp.GetService<ILogPersist>();
-    IExecucaoRotinaPersist execucaoRotinaPersist = sp.GetService<IExecucaoRotinaPersist>();
+    var logPersist = sp.GetService<ILogPersist>();
+    var execucaoRotinaPersist = sp.GetService<IExecucaoRotinaPersist>();
 
     try
     {

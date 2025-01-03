@@ -1,18 +1,28 @@
-﻿using CVP.Routines.MotorArquivosComunicacao.Enums;
-using CVP.Routines.MotorArquivosComunicacao.Console.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CVP.Routines.MotorArquivosComunicacao.ProcessData
 {
-    public class ProcessDataPrevidenciaM2
+    public class ProcessDataService<TService, TEnum>
+        where TService : class
+        where TEnum : Enum
     {
-        private readonly IPrevidenciaM2Service _previdenciaM2Service;
+        private readonly TService _service;
 
-        public ProcessDataPrevidenciaM2(IPrevidenciaM2Service previdenciaM2Service)
+        public ProcessDataService(TService service)
         {
-            _previdenciaM2Service = previdenciaM2Service ?? throw new ArgumentNullException(nameof(previdenciaM2Service));
+            _service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
-        public async Task ProcessFilesAsync(string inputPath, string outputPath, string processedFilesPath, PrevidenciaM2Type tipo)
+        public async Task ProcessFilesAsync(
+            string inputPath,
+            string outputPath,
+            string processedFilesPath,
+            TEnum tipo,
+            Func<TService, Stream, TEnum, Task<IEnumerable<byte[]>>> converterMethod)
         {
             if (string.IsNullOrWhiteSpace(inputPath))
                 throw new ArgumentException("O caminho de entrada é inválido.", nameof(inputPath));
@@ -52,7 +62,7 @@ namespace CVP.Routines.MotorArquivosComunicacao.ProcessData
                     if (!fileStream.CanRead)
                         throw new ArgumentException($"O arquivo '{file}' não pode ser lido.");
 
-                    IEnumerable<byte[]> pdfsData = await _previdenciaM2Service.ConverterEGerarPrevidenciaPdfAsync(fileStream, tipo);
+                    IEnumerable<byte[]> pdfsData = await converterMethod(_service, fileStream, tipo);
                     int pdfIndex = 1;
 
                     foreach (var pdf in pdfsData)
@@ -63,11 +73,6 @@ namespace CVP.Routines.MotorArquivosComunicacao.ProcessData
                         pdfIndex++;
                         System.Console.WriteLine($"Arquivo processado e salvo como PDF: {outputFileName}");
                     }
-
-                    //string processedFileName = Path.Combine(processedFilesPath, Path.GetFileName(file));
-                    //File.Move(file, processedFileName);
-
-                    //System.Console.WriteLine($"Arquivo movido para a pasta de arquivos processados: {processedFileName}");
                 }
                 catch (Exception ex)
                 {

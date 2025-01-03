@@ -16,7 +16,7 @@ namespace CVP.Routines.MotorArquivosComunicacao.Console.Services
         {
             _importFileConverterService = dataConverterService;
         }
-        public async Task<byte[]> ConverterEGerarPrevidenciaM6PdfAsync(Stream fileStream,  PrevidenciaM6Type tipo)
+        public async Task<IEnumerable<byte[]>> ConverterEGerarPrevidenciaPdfAsync(Stream fileStream,  PrevidenciaM6Type tipo)
         {
             if (fileStream == null || fileStream.Length == 0)
                 throw new ArgumentException("O arquivo enviado está vazio ou é inválido.");
@@ -25,21 +25,28 @@ namespace CVP.Routines.MotorArquivosComunicacao.Console.Services
             await fileStream.CopyToAsync(memoryStream);
             memoryStream.Position = 0;
 
-            var PrevidenciaM6Data = await _importFileConverterService.ProcessDataAsync(memoryStream);
+            var records = await _importFileConverterService.ProcessDataAsync(memoryStream);
 
-            if (PrevidenciaM6Data == null || !PrevidenciaM6Data.Any())
+            if (records == null || !records.Any())
                 throw new ArgumentException("O arquivo não contém dados válidos.");
 
-            var primeiroParticipante = PrevidenciaM6Data
-               .FirstOrDefault(e => e.ContainsKey("RecordType") && e["RecordType"] == "13");
+            if (records == null || !records.Any())
+                throw new ArgumentException("O arquivo não contém dados válidos.");
 
-            if (!primeiroParticipante.Any())
-                throw new ArgumentException($"Nenhum dado do tipo {tipo} foi encontrado no arquivo.");
+#if DEBUG
+            var firstRecord = records.FirstOrDefault();
+            if (firstRecord == null)
+                throw new InvalidOperationException("Nenhum registro encontrado para processar em modo Debug.");
 
-            return GerarDocumentoPrevidenciaM6(primeiroParticipante, tipo);
+            return new List<byte[]> { GerarDocumentoPrevidenciaM6(firstRecord, tipo) };
+#else
+                // Em modo Release, processa todos os registros
+                return records.Select(record => GerarDocumentoPrevidenciaM1(record, tipo));
+#endif 
+            return records.Select(record => GerarDocumentoPrevidenciaM6(record, tipo));
         }
 
-        public byte[] GerarDocumentoPrevidenciaM6(Dictionary<string, string> dados, PrevidenciaM6Type tipo)
+        private byte[] GerarDocumentoPrevidenciaM6(Dictionary<string, string> dados, PrevidenciaM6Type tipo)
         {
             string imagePath = GetImagePath(tipo, PrevidenciaM6Folder);
 

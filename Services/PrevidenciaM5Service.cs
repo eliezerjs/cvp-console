@@ -16,7 +16,7 @@ namespace CVP.Routines.MotorArquivosComunicacao.Console.Services
         {
             _importFileConverterService = dataConverterService;
         }
-        public async Task<byte[]> ConverterEGerarPrevidenciaM5PdfAsync(Stream fileStream,  PrevidenciaM5Type tipo)
+        public async Task<IEnumerable<byte[]>> ConverterEGerarPrevidenciaPdfAsync(Stream fileStream,  PrevidenciaM5Type tipo)
         {
             if (fileStream == null || fileStream.Length == 0)
                 throw new ArgumentException("O arquivo enviado está vazio ou é inválido.");
@@ -25,22 +25,24 @@ namespace CVP.Routines.MotorArquivosComunicacao.Console.Services
             await fileStream.CopyToAsync(memoryStream);
             memoryStream.Position = 0;
 
-            var PrevidenciaM5Data = await _importFileConverterService.ProcessDataAsync(memoryStream);
+            var records = await _importFileConverterService.ProcessDataAsync(memoryStream);
 
-            if (PrevidenciaM5Data == null || !PrevidenciaM5Data.Any())
+            if (records == null || !records.Any())
                 throw new ArgumentException("O arquivo não contém dados válidos.");
 
-           
-                var registro = PrevidenciaM5Data
-                .FirstOrDefault(e => e.ContainsKey("RecordType") && e["RecordType"] == "26"); 
+#if DEBUG            
+            var firstRecord = records.FirstOrDefault();
+            if (firstRecord == null)
+                throw new InvalidOperationException("Nenhum registro encontrado para processar em modo Debug.");
 
-                return GerarDocumentoPrevidenciaM5(registro, tipo);
-           
-
-            return null;
+            return new List<byte[]> { GerarDocumentoPrevidenciaM5(firstRecord, tipo) };
+#else
+                // Em modo Release, processa todos os registros
+                return records.Select(record => GerarDocumentoPrevidenciaM1(record, tipo));
+#endif 
         }
 
-        public byte[] GerarDocumentoPrevidenciaM5(Dictionary<string, string> dados, PrevidenciaM5Type tipo)
+        private byte[] GerarDocumentoPrevidenciaM5(Dictionary<string, string> dados, PrevidenciaM5Type tipo)
         {
             string imagePath = GetImagePath(tipo, PrevidenciaM5Folder);
 
