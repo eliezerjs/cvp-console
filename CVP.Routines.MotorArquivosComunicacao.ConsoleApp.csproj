@@ -129,7 +129,6 @@
   <ItemGroup>
     <Folder Include="Entities\" />
     <Folder Include="Persistences\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>

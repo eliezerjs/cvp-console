@@ -7,6 +7,8 @@ using CVP.Routines.MotorArquivosComunicacao.Console.Interfaces;
 using CVP.Routines.MotorArquivosComunicacao.Console.Services.Capas;
 using CVP.Routines.MotorArquivosComunicacao.Console.Services;
 using Microsoft.Extensions.DependencyInjection;
+using CVP.Routines.MotorArquivosComunicacao.ConsoleApp.Interfaces;
+using CVP.Routines.MotorArquivosComunicacao.ConsoleApp.Services.Upload;
 
 namespace CVP.Routines.MotorArquivosComunicacao.Console
 {
@@ -41,6 +43,7 @@ namespace CVP.Routines.MotorArquivosComunicacao.Console
                 .AddScoped<ICapaFacSimplesColoridoService, CapaFacSimplesColoridoService>()
                 .AddScoped<ICapaFacARService, CapaFacARService>()
                 .AddScoped<ICapaFacSimplesPBService, CapaFacSimplesPBService>()
+                .AddScoped<IAutenticacaoService, AutenticacaoService>()
                 .AddHttpClient<IHttpServices, HttpServices>(httpClient =>
                 {
                     httpClient.Timeout = TimeSpan.FromMinutes(5);

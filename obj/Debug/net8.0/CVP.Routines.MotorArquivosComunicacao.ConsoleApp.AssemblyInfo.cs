@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CVP.Routines.MotorArquivosComunicacao.ConsoleApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e4ed1bc3406df694787310a4c59171e276104399")]
 [assembly: System.Reflection.AssemblyProductAttribute("CVP.Routines.MotorArquivosComunicacao.ConsoleApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CVP.Routines.MotorArquivosComunicacao.ConsoleApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
