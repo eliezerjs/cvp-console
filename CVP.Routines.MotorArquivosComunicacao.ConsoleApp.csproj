@@ -76,9 +76,6 @@
     <Content Include="Resources\PrevidenciaM2\PK10.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\PrevidenciaM2\PK31.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Resources\PrevidenciaM3\PK56.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
