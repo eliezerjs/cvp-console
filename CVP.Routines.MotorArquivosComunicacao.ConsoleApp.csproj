@@ -1,0 +1,159 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\PrevidenciaM1\PK28.jpg" />
+    <None Remove="Resources\PrevidenciaM1\PK29.jpg" />
+    <None Remove="Resources\PrevidenciaM1\PK30.jpg" />
+    <None Remove="Resources\PrevidenciaM1\PK31.jpg" />
+    <None Remove="Resources\PrevidenciaM1\PK32.jpg" />
+    <None Remove="Resources\PrevidenciaM1\PK33.jpg" />
+    <None Remove="Resources\PrevidenciaM1\PK34.jpg" />
+    <None Remove="Resources\PrevidenciaM1\PK36.jpg" />
+    <None Remove="Resources\PrevidenciaM1\PK47.jpg" />
+    <None Remove="Resources\PrevidenciaM2\PK08.jpg" />
+    <None Remove="Resources\PrevidenciaM2\PK09.jpg" />
+    <None Remove="Resources\PrevidenciaM2\PK10.jpg" />
+    <None Remove="Resources\PrevidenciaM2\PK31.jpg" />
+    <None Remove="Resources\PrevidenciaM3\PK56.jpg" />
+    <None Remove="Resources\PrevidenciaM3\PK57.jpg" />
+    <None Remove="Resources\PrevidenciaM3\PK58.jpg" />
+    <None Remove="Resources\PrevidenciaM4\PK05.jpg" />
+    <None Remove="Resources\PrevidenciaM5\PK12.jpg" />
+    <None Remove="Resources\PrevidenciaM5\PK13.jpg" />
+    <None Remove="Resources\PrevidenciaM5\PK14.jpg" />
+    <None Remove="Resources\PrevidenciaM6\PK17.jpg" />
+    <None Remove="Resources\PrevidenciaOutros\PK11.jpg" />
+    <None Remove="Resources\PrevidenciaOutros\PK15.jpg" />
+    <None Remove="Resources\PrevidenciaOutros\PK35.jpg" />
+    <None Remove="Resources\PrevidenciaOutros\PK37.jpg" />
+    <None Remove="Resources\PrevidenciaOutros\PK44.jpg" />
+    <None Remove="Resources\PrevidenciaOutros\PK48.jpg" />
+    <None Remove="Resources\PrevidenciaOutros\PK49.jpg" />
+    <None Remove="Resources\PrevidenciaOutros\PK53.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\PrevidenciaM1\PK28.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaM1\PK29.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaM1\PK30.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaM1\PK31.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaM1\PK32.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaM1\PK33.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaM1\PK34.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaM1\PK36.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaM1\PK47.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaM2\PK08.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaM2\PK09.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaM2\PK10.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaM2\PK31.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaM3\PK56.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaM3\PK57.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaM3\PK58.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaM4\PK05.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaM5\PK12.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaM5\PK13.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaM5\PK14.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaM6\PK17.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaOutros\PK11.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaOutros\PK15.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaOutros\PK35.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaOutros\PK37.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaOutros\PK44.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaOutros\PK48.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaOutros\PK49.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\PrevidenciaOutros\PK53.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Entities\" />
+    <Folder Include="Persistences\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.28" />
+    <PackageReference Include="itext7" Version="9.0.0" />
+    <PackageReference Include="itext7.bouncy-castle-adapter" Version="9.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.Development.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
