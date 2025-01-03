@@ -2,7 +2,8 @@
 {
     public interface IImportFilePrevConverterService
     {
-        public bool ValidarFormatoArquivo(Stream fileStream);
+        bool ValidarFormatoArquivo(Stream fileStream);
+        Task<string> ConverterArquivoParaJsonComProcessDataAsync(Stream fileStream);
         Task<List<Dictionary<string, string>>> ProcessDataAsync(Stream dataStream);
     }
 }

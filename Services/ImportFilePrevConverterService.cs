@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Text.Json;
 using CVP.Routines.MotorArquivosComunicacao.Console.Interfaces;
 
 namespace CVP.Routines.MotorArquivosComunicacao.Console.Services
@@ -37,6 +38,23 @@ namespace CVP.Routines.MotorArquivosComunicacao.Console.Services
             }
 
             return true;
+        }
+
+        public async Task<string> ConverterArquivoParaJsonComProcessDataAsync(Stream fileStream)
+        {
+            if (fileStream == null || !fileStream.CanRead)
+                throw new ArgumentException("O stream é inválido ou não pode ser lido.");
+
+            fileStream.Position = 0; // Garante que o stream começa do início
+
+            // Usa o ProcessDataAsync para processar os dados do arquivo
+            var registrosProcessados = await ProcessDataAsync(fileStream);
+
+            if (registrosProcessados == null || !registrosProcessados.Any())
+                throw new InvalidOperationException("Nenhum dado válido foi encontrado no arquivo.");
+
+            // Converte a lista de dicionários para JSON
+            return JsonSerializer.Serialize(registrosProcessados, new JsonSerializerOptions { WriteIndented = true });
         }
 
         public async Task<List<Dictionary<string, string>>> ProcessDataAsync(Stream dataStream)

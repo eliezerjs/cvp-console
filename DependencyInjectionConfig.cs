@@ -9,6 +9,7 @@ using CVP.Routines.MotorArquivosComunicacao.Console.Services;
 using Microsoft.Extensions.DependencyInjection;
 using CVP.Routines.MotorArquivosComunicacao.ConsoleApp.Interfaces;
 using CVP.Routines.MotorArquivosComunicacao.ConsoleApp.Services.Upload;
+using CVP.Routines.MotorArquivosComunicacao.ConsoleApp.Interfaces.Upload;
 
 namespace CVP.Routines.MotorArquivosComunicacao.Console
 {

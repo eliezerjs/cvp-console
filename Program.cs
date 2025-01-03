@@ -20,6 +20,7 @@ int interval = int.TryParse(Environment.GetEnvironmentVariable("TIMER_INTERVAL")
 string inputPath = Environment.GetEnvironmentVariable("INPUT_PATH") ?? throw new InvalidOperationException("INPUT_PATH is not set.");
 string outputPath = Environment.GetEnvironmentVariable("OUTPUT_PATH") ?? throw new InvalidOperationException("OUTPUT_PATH is not set.");
 string processedFilesPath = Environment.GetEnvironmentVariable("PROCESSED_FILES_PATH") ?? throw new InvalidOperationException("PROCESSED_FILES_PATH is not set.");
+string jsonPrevFilesPath = Environment.GetEnvironmentVariable("JSON_PREV_FILES_PATH") ?? throw new InvalidOperationException("JSON_PREV_FILES_PATH is not set.");
 
 System.Timers.Timer timer = new(interval);
 
@@ -39,20 +40,30 @@ System.Timers.Timer timer = new(interval);
             (sp.GetService<IPrevidenciaOutrosService>(), typeof(PrevidenciaOutrosType))
         };
 
-        foreach (var (service, enumType) in servicesAndTypes)
+    var jsonGenerator = sp.GetService<IImportFilePrevConverterService>().ConverterArquivoParaJsonComProcessDataAsync;
+
+    foreach (var (service, enumType) in servicesAndTypes)
         {
             foreach (var enumValue in Enum.GetValues(enumType))
             {
-                var processData = new ProcessDataService<object, Enum>(service);
+            var processData = new ProcessDataService<object, Enum>(service);
 
-                // Conversão dinâmica do método de conversão
-                Func<object, Stream, Enum, Task<IEnumerable<byte[]>>> converterMethod = (svc, stream, tipo) =>
-                    (Task<IEnumerable<byte[]>>)svc.GetType()
-                        .GetMethod("ConverterEGerarPrevidenciaPdfAsync")?
-                        .Invoke(svc, new object[] { stream, tipo });
+            // Conversão dinâmica do método de conversão
+            Func<object, Stream, Enum, Task<IEnumerable<byte[]>>> converterMethod = (svc, stream, tipo) =>
+                (Task<IEnumerable<byte[]>>)svc.GetType()
+                    .GetMethod("ConverterEGerarPrevidenciaPdfAsync")?
+                    .Invoke(svc, new object[] { stream, tipo });
 
-                await processData.ProcessFilesAsync(inputPath, outputPath, processedFilesPath, (Enum)enumValue, converterMethod);
-            }
+                    await processData.ProcessFilesAsync(
+                        inputPath,
+                        outputPath,
+                        processedFilesPath,
+                        (Enum)enumValue,
+                        converterMethod,
+                        jsonGenerator,
+                        jsonPrevFilesPath
+                    );
+             }
         }
 
         Console.WriteLine("Todos os arquivos foram processados com sucesso.");

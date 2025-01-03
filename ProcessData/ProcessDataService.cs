@@ -22,7 +22,9 @@ namespace CVP.Routines.MotorArquivosComunicacao.ProcessData
             string outputPath,
             string processedFilesPath,
             TEnum tipo,
-            Func<TService, Stream, TEnum, Task<IEnumerable<byte[]>>> converterMethod)
+            Func<TService, Stream, TEnum, Task<IEnumerable<byte[]>>> converterMethod,
+            Func<Stream, Task<string>> jsonGeneratorMethod = null,
+            string jsonOutputPath = null)
         {
             if (string.IsNullOrWhiteSpace(inputPath))
                 throw new ArgumentException("O caminho de entrada é inválido.", nameof(inputPath));
@@ -30,8 +32,8 @@ namespace CVP.Routines.MotorArquivosComunicacao.ProcessData
             if (string.IsNullOrWhiteSpace(outputPath))
                 throw new ArgumentException("O caminho de saída é inválido.", nameof(outputPath));
 
-            if (string.IsNullOrWhiteSpace(processedFilesPath))
-                throw new ArgumentException("O caminho dos arquivos processados é inválido.", nameof(processedFilesPath));
+            //if (string.IsNullOrWhiteSpace(processedFilesPath))
+            //    throw new ArgumentException("O caminho dos arquivos processados é inválido.", nameof(processedFilesPath));
 
             if (!Directory.Exists(inputPath))
                 throw new DirectoryNotFoundException($"O diretório de entrada '{inputPath}' não foi encontrado.");
@@ -41,6 +43,12 @@ namespace CVP.Routines.MotorArquivosComunicacao.ProcessData
 
             if (!Directory.Exists(processedFilesPath))
                 Directory.CreateDirectory(processedFilesPath);
+
+            if (jsonGeneratorMethod != null && string.IsNullOrWhiteSpace(jsonOutputPath))
+                throw new ArgumentException("O caminho de saída para os arquivos JSON é inválido.", nameof(jsonOutputPath));
+
+            if (jsonGeneratorMethod != null && !Directory.Exists(jsonOutputPath))
+                Directory.CreateDirectory(jsonOutputPath);
 
             var files = Directory.GetFiles(inputPath, "*.txt");
 
@@ -62,6 +70,16 @@ namespace CVP.Routines.MotorArquivosComunicacao.ProcessData
                     if (!fileStream.CanRead)
                         throw new ArgumentException($"O arquivo '{file}' não pode ser lido.");
 
+                    if (jsonGeneratorMethod != null)
+                    {
+                        fileStream.Position = 0; 
+                        var jsonContent = await jsonGeneratorMethod(fileStream);
+                        var jsonFileName = Path.Combine(jsonOutputPath, $"{Path.GetFileNameWithoutExtension(file)}-{tipo}.json");
+                        await File.WriteAllTextAsync(jsonFileName, jsonContent);
+                        System.Console.WriteLine($"Arquivo JSON gerado: {jsonFileName}");
+                    }
+
+                    fileStream.Position = 0;
                     IEnumerable<byte[]> pdfsData = await converterMethod(_service, fileStream, tipo);
                     int pdfIndex = 1;
 
